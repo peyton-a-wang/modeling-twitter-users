@@ -53,7 +53,7 @@ public class TweeterCollection {
     /**
      * Getter method for obtaining the number of stories.
      * 
-     * @return int total number of stories
+     * @return int total number of stories 
      */
     public int getTotalStories(){
         return totalStories;
