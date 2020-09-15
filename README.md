@@ -4,5 +4,5 @@ The purpose of our Data Structures final project was to determine which fake Rus
 ![Portion of the bipartite graph of Twitter users and tweet count visualized in yED](https://github.com/peyton-a-wang/modeling-twitter-users/blob/master/graph.png)
 
 ## Authors
-* Peyton Wang
-* Alexandra Bullen-Smit
+* Peyton Wang (peyton-a-wang)
+* Alexandra Bullen-Smith (abullens)
