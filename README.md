@@ -5,4 +5,4 @@ The purpose of our Data Structures final project was to determine which fake Rus
 
 ## Authors
 * Peyton Wang (peyton-a-wang)
-* Alexandra Bullen-Smith (abullens)
+* Alexandra Bullen-Smith (abullensmith)
