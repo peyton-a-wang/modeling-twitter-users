@@ -7,3 +7,18 @@ The purpose of our Data Structures final project was to determine which fake Rus
 ## Authors
 * Peyton Wang (peyton-a-wang)
 * Alexandra Bullen-Smith (abullensmith)
+
+## Data Structures
+* Graph
+* Hashtable
+* LinkedList
+* Vector
+* Iterator
+* ArrayStack (for DFS)
+* LinkedQueue (for BFS)
+
+## Java Files
+* [AdjListsGraph.java](https://github.com/peyton-a-wang/modeling-twitter-users/blob/master/AdjListsGraph.java)
+* [Tweeter.java](https://github.com/peyton-a-wang/modeling-twitter-users/blob/master/Tweeter.java)
+* [TweeterCollection.java](https://github.com/peyton-a-wang/modeling-twitter-users/blob/master/TweeterCollection.java)
+* [InvestigateDriver.java](https://github.com/peyton-a-wang/modeling-twitter-users/blob/master/InvestigateDriver.java)
