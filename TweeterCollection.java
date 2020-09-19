@@ -14,8 +14,8 @@ import java.net.URL;
 /**
  * TweeterCollection contains a Graph of screen names and stories, Hashtable of screen names 
  * and its corresponding Twitter user, and a Hashtable of stories and its reference 
- * frequency. It also reads in data on the graph components from a CSV and collects 
- * additional data to be further synthesized.
+ * frequency. It also reads in data on the graph components from a CSV and synthesizes 
+ * additional data to be further analyzed.
  *
  * TweeterCollection.java
  * @author Alexandra Bullen-Smith
@@ -24,9 +24,10 @@ import java.net.URL;
  */
 
 public class TweeterCollection {
+    
     // instance variables
     private AdjListsGraph<String> graph;
-    private Hashtable<String,TweeterUser> usersTable;
+    private Hashtable<String,TweeterUser> userTable;
     private Hashtable<String,Integer> storyTable;
     private int totalStories;
     private int totalTweets;
@@ -40,14 +41,22 @@ public class TweeterCollection {
     /**
      * Constructor creates a CollectionOfRats object and initializes instance variables.
      * 
-     * @param String name of CSV file name to be read in
+     * @param String name of the CSV file containing data to be read in
      */
     public CollectionOfRats(String csvFileName) {
-        // initialize instance variables
         this.graph = new AdjListsGraph<String>();
-        this.usersTable = new Hashtable<String,TweeterUser>();
-        this.storyTable = new Hashtable<String,Integer>();
-        this.readRats(csvFileName);
+        this.userTable = new Hashtable<String, TweeterUser>();
+        this.storyTable = new Hashtable<String, Integer>();
+        this.readTwitterData(csvFileName);
+    }
+
+    /**
+     * Getter method for obtaining the entire graph of Twitter users and stories.
+     * 
+     * @return AdjListsGraph of the Twitter data
+     */
+    public AdjListsGraph<String> getGraph(){
+        return this.graph;
     }
 
     /**
@@ -55,8 +64,8 @@ public class TweeterCollection {
      * 
      * @return int total number of stories 
      */
-    public int getTotalStories(){
-        return totalStories;
+    public int getTotalStories() {
+        return this.totalStories;
     }
     
     /**
@@ -64,8 +73,8 @@ public class TweeterCollection {
      * 
      * @return int total number of tweets
      */
-    public int getTotalTweets(){
-        return totalTweets;
+    public int getTotalTweets() {
+        return this.totalTweets;
     }
     
     /**
@@ -73,12 +82,12 @@ public class TweeterCollection {
      * 
      * @return int total number of users
      */
-    public int getTotalUsers(){
-        return totalUsers;
+    public int getTotalUsers() {
+        return this.totalUsers;
     }
     
     /**
-     * Getter method for obtaining the most popular story
+     * Getter method for obtaining the most popular story.
      * 
      * @return String ID of the most popular story
      */
@@ -114,12 +123,40 @@ public class TweeterCollection {
     }
 
     /**
-     * Reads in the data on graph components from the CSV file and 
-     * adds the data to the data structures.
+     * Getter method that takes in the ID of a story and obtains its title.
      * 
-     * @param String CSV file name
+     * @param String ID of the least popular story
+     * @return title of the story associated with its ID
      */
-    private void readRats(String csvFilename) {
+    public String getStoryTitle(String storyId) {
+        String storyTitle = ""; 
+        try {
+            URL url = new URL(urlFindStoryTitle + storyId);
+            Scanner scan = new Scanner(url.openStream());
+            scan.nextLine();
+            storyTitle = scan.nextLine();
+        } catch(IOException e){
+            System.out.println(e);  
+        }
+        return storyTitle;
+    }
+
+    /**
+     * Returns a boolean indicating whether this graph is connected.
+     * 
+     * @return boolean true if the size of the LCC equals the number of verties, falseotherwise
+     */
+    public boolean isConnected() {
+        return this.findLCCSize() == this.graph.getNumVertices();
+    }
+
+    /**
+     * Reads in the Twitter data from the CSV file and adds the data 
+     * to the according data structures.
+     * 
+     * @param String name of the CSV file to be read in
+     */
+    private void readTwitterData(String csvFilename) {
         try {
             Scanner scan = new Scanner(new File(csvFilename));
 
@@ -135,11 +172,11 @@ public class TweeterCollection {
                 String tweetCount = lineArray[2];
                 String storyCount = lineArray[3];
 
-                graph.addVertex(screenName);  // add each screen name as a vertex 
+                this.graph.addVertex(screenName);  // add each screen name as a vertex 
 
                 // create new instance of Tweeter user based on above data values
-                TweeterUser user = new TweeterUser(id,screenName,Integer.parseInt(tweetCount),Integer.parseInt(storyCount));
-                usersTable.put(screenName,user);  // add user to user table
+                TweeterUser user = new TweeterUser(id, screenName, Integer.parseInt(tweetCount), Integer.parseInt(storyCount));
+                this.userTable.put(screenName,user);  // add user to user table
 
                 totalTweets += Integer.parseInt(tweetCount);  // accumulate total # of tweets
                 totalUsers++;
@@ -150,19 +187,19 @@ public class TweeterCollection {
                 int numReposted = 0; 
 
                 for (int i = 0; i < storiesArray.length; i++) {
-                    if (storyTable.containsKey(storiesArray[i])) {
-                        numReposted = storyTable.get(storiesArray[i]);
+                    if (this.storyTable.containsKey(storiesArray[i])) {
+                        numReposted = this.storyTable.get(storiesArray[i]);
 
                         // go to story in hashtable and increment its frequency
-                        storyTable.put(storiesArray[i], numReposted++);
+                        this.storyTable.put(storiesArray[i], numReposted++);
                     } else {
-                        storyTable.put(storiesArray[i], 1);  // add story with frequency of 1
+                        this.storyTable.put(storiesArray[i], 1);  // add story with frequency of 1
                         totalStories++;
-                        graph.addVertex(storiesArray[i]);  // add each story as a vertex
+                        this.graph.addVertex(storiesArray[i]);  // add each story as a vertex
                     }
 
                     // create an edge between each story and its associated screen name
-                    graph.addEdge(screenName, storiesArray[i]); 
+                    this.graph.addEdge(screenName, storiesArray[i]); 
                 }
             }
         } catch(FileNotFoundException e) {
@@ -179,8 +216,8 @@ public class TweeterCollection {
         int currentSize;
         int minStorySize = Integer.MAX_VALUE;
 
-        for(String storyId: storyTable.keySet()) { // iterate through keys in story hashtable
-            currentSize = (graph.getSuccessors(storyId)).size(); //should we change
+        for(String storyId: this.storyTable.keySet()) {  // iterate through keys in story hashtable
+            currentSize = (this.graph.getSuccessors(storyId)).size(); 
 
             if (currentSize > maxStorySize) {
                 this.mostPopStory = storyId;
@@ -204,16 +241,16 @@ public class TweeterCollection {
         int currentTweets;
         int minTweets = Integer.MAX_VALUE;
 
-        for(String screenName: usersTable.keySet()) {
-            currentSize = (graph.getSuccessors(screenName)).size();
-           currentTweets = usersTable.get(screenName).getTweetCount();
+        for(String screenName: this.userTable.keySet()) {
+            currentSize = (this.graph.getSuccessors(screenName)).size();
+            currentTweets = this.userTable.get(screenName).getTweetCount();
 
             if (currentSize > mostStoriesSoFar) {
                 this.mostActiveWriter = maxStories;
                 maxStories = currentTweets;
             }
 
-            if (currentTweets > maxTweeets){
+            if (currentTweets > maxTweeets) {
                 mostActiveTweeter = screenName;
                 maxStories = currentTweets;
             }
@@ -226,13 +263,13 @@ public class TweeterCollection {
      * @return int size of the LCC
      */
     public int findLCCSize() {
-        Vector<String> vertices = graph.getAllVertices();
+        Vector<String> vertices = this.graph.getAllVertices();
         int maxSize = 0;
         int currentSize;
         LinkedList<String> dfsList = new LinkedList<String>(); 
 
         for (int i = 0; i < vertices.size(); i++) {
-            dfsList = graph.depthFirstSearch((vertices.elementAt(i)));
+            dfsList = this.graph.depthFirstSearch((vertices.elementAt(i)));
             currentSize = dfsList.size();
 
             if (currentSize > maxSize) {
@@ -243,18 +280,17 @@ public class TweeterCollection {
     }
 
     /**
-     * Implements a breadth first search on every node and finds the shortest 
-     * connected component.
+     * Implements a breadth first search on every node and finds the shortest connected component.
      * 
      * @return size of shortest connected component
      */
     public int findShortestConnectedComponentSize() {
-        Vector<String> vertices = graph.getAllVertices();
+        Vector<String> vertices = this.graph.getAllVertices();
         int minDist = Integer.MAX_VALUE;
         int currentDist;
 
         for (int i = 0; i < vertices.size(); i++) {
-            LinkedList<String> bfsList = graph.breadthFirstSearch((vertices.elementAt(i)));
+            LinkedList<String> bfsList = this.graph.breadthFirstSearch((vertices.elementAt(i)));
             currentDist = bfsList.size();
 
             if (currentDist < minDist) {
@@ -266,47 +302,12 @@ public class TweeterCollection {
     }
 
     /**
-     * Reterns a boolean indicating whether this graph is connected.
-     * 
-     * @return boolean true if the size of the LCC equals the number of verties, falseotherwise
-     */
-    public boolean isConnected() {
-        return this.findLCCSize() == graph.getNumVertices();
-    }
-
-    /**
-     * Getter method that takes in the ID of a story and returns its title.
-     * 
-     * @param String  // ID of story
-     * @return  // String title of the story
-     */
-    public String getStoryTitle(String storyId) {
-        String storyTitle = ""; 
-        try {
-            URL url = new URL(urlFindStoryTitle + storyId);
-            Scanner scan = new Scanner(url.openStream());
-            scan.nextLine();
-            storyTitle = scan.nextLine();
-        } catch(IOException e){
-            System.out.println(e);  
-        }
-        return storyTitle;
-    }
-
-    /**
-     * getGraph() is a getter that returns the graph of the users and stories
-     */
-    public AdjListsGraph<String> getGraph(){
-        return graph;
-    }
-
-    /**
      * Finds the most central node by going through all the nodes using DFS starting from any node,
      * and finding the smallest sum. 
      * 
-     * @return String element stored in the the first central node
+     * @return String element stored in the first central node
      */
-    public String findMostCentralNode(){
+    public String findMostCentralNode() {
         int total = 0;
         int leastSizeSoFar = Integer.MAX_VALUE;
         String mostCentralSoFar = "";
@@ -314,14 +315,14 @@ public class TweeterCollection {
         LinkedList<String> allCentralNodesFinal = new LinkedList<String>();
 
         //initial to for loops to get some of the potential central nodes
-        for (String first : graph.getAllVertices()){
+        for (String first : this.graph.getAllVertices()){
             total = 0;
             
-            for(String second: graph.getAllVertices()){
-                total += graph.depthFirstSearchWithTwo(first,second).size();
+            for(String second: this.graph.getAllVertices()) {
+                total += this.graph.depthFirstSearchWithTwo(first,second).size();
             }
 
-            if (total<leastSizeSoFar){
+            if (total < leastSizeSoFar){
                 leastSizeSoFar=total;
                 allCentralNodes.add(first);
                 mostCentralSoFar = first;
@@ -331,29 +332,36 @@ public class TweeterCollection {
     }
 
     /**
-     * main method for testing
+     * Main method for testing.
      */ 
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        System.out.println("***Test Russian Accounts CSV***\n");
         TweeterCollection tc = new TweeterCollection("All_Russian-Accounts-in-TT-stories.csv.tsv");
         System.out.println(tc.graph.toString());
+        
         tc.graph.saveToTGF("ratsTEST.tgf");
         tc.calculateStoryStats();
         tc.calculateUserStats();
-        System.out.println("total vertices: " + tc.graph.getNumVertices());
-        System.out.println("total tweets: " + tc.totalTweets);
-        System.out.println("total stories: " + tc.totalStories);
-        System.out.println("total users: " + tc.totalUsers);
-        System.out.println("most active story user: "+ tc.getMostActiveWriter());
-        System.out.println("most active Tweeter user: "+ tc.getMostActiveTweeter());
-        System.out.println("LCC size: " + tc.findLCCSize());
+        
+        System.out.println("Basic Graph Data:");
+        System.out.println("Total vertices: " + tc.graph.getNumVertices());
+        System.out.println("Total tweets: " + tc.totalTweets);
+        System.out.println("Total stories: " + tc.totalStories);
+        System.out.println("Total users: " + tc.totalUsers);
+        System.out.println("Most active story user: "+ tc.getMostActiveWriter());
+        System.out.println("Most active Tweeter user: "+ tc.getMostActiveTweeter());
+
+        System.out.println("\nGraph Data from DFS and BFS:");
+        System.out.println("Largest component size: " + tc.findLCCSize());
         System.out.println(tc.findMostCentralNode());
-        System.out.println("shortest distance: " + TCPConnection.findShortestDist());
+        System.out.println("Shortest distance: " + TCPConnection.findShortestDist());
+
+        System.out.println("\nStory Trends to Analyze:");
         String mostPopStoryId = tc.getMostPopStory();
         String leastPopStoryId = tc.getLeastPopStory();
-        System.out.println("id of most popular story: " + mostPopStoryId);
-        System.out.println("title of most popular story: " + tf.getStoryTitle(mostPopStoryId));
-        System.out.println("id of least popular story: " + tcPopStoryId);
-        System.out.println("title least popular story: " + tcgetStoryTitle(tc.getLeastPopStory()));
-
+        System.out.println("ID of the most popular story: " + mostPopStoryId);
+        System.out.println("Title of the most popular story: " + tc.getStoryTitle(mostPopStoryId));
+        System.out.println("ID of least popular story: " + tc.PopStoryId);
+        System.out.println("Title of the least popular story: " + tc.getStoryTitle(tc.getLeastPopStory()));
     }
 }

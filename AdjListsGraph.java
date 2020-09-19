@@ -19,6 +19,7 @@ import java.io.IOException;
  */
 
 public class AdjListsGraph<T> implements Graph<T> {
+
     // instance variables
     private Vector<T> vertices;
     private Vector<LinkedList<T>> arcs;
@@ -27,17 +28,17 @@ public class AdjListsGraph<T> implements Graph<T> {
      * Constructor creates a AdjListsGraph object and initializes instance variables.
      */
     public AdjListsGraph(){
-        vertices = new Vector<T>();
-        arcs = new Vector<LinkedList<T>>();
+        this.vertices = new Vector<T>();
+        this.arcs = new Vector<LinkedList<T>>();
     }
 
     /** 
      * Getter method for obtaining all the vertices in this graph.
      * 
-     * @return Vector<T> of all vertices
+     * @return Vector of all vertices
      */
     public Vector<T> getAllVertices(){
-        return vertices;
+        return this.vertices;
     }
 
     /** 
@@ -46,7 +47,7 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @return int total number of vertices
      */
     public int getNumVertices() {
-        return vertices.size();
+        return this.vertices.size();
     }
 
     /** 
@@ -56,8 +57,8 @@ public class AdjListsGraph<T> implements Graph<T> {
      */
     public int getNumArcs() {
         int numArcs = 0;
-        for (int i = 0; i < arcs.size(); i++) {
-            numArcs += arcs.elementAt(i).size();
+        for (int i = 0; i < this.arcs.size(); i++) {
+            numArcs += this.arcs.elementAt(i).size();
         }
         return numArcs;
     }
@@ -67,9 +68,9 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T given vertex
      * @return LinkedList containing all the successors of the given vertex.
      */
-    public LinkedList<T> getSuccessors(T vertex){
-        int i = vertices.indexOf(vertex);
-        return arcs.get(i);
+    public LinkedList<T> getSuccessors(T vertex) {
+        int i = this.vertices.indexOf(vertex);
+        return this.arcs.get(i);
     }
 
     /** 
@@ -78,13 +79,13 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T given vertex
      * @return LinkedList containing all the predecessors of the given vertex.
      */
-    public LinkedList<T> getPredecessors(T vertex){
+    public LinkedList<T> getPredecessors(T vertex) {
         LinkedList<T> newList = new LinkedList<T>();
 
-        for (int i = 0; i < vertices.size(); i++) {
-            LinkedList<T> sucessorList = this.getSuccessors(vertices.get(i));
+        for (int i = 0; i < this.vertices.size(); i++) {
+            LinkedList<T> sucessorList = this.getSuccessors(this.vertices.get(i));
             if (sucessorList.contains(vertex)) {
-                newList.add(vertices.get(i));
+                newList.add(this.vertices.get(i));
             }            
         }
 
@@ -96,8 +97,8 @@ public class AdjListsGraph<T> implements Graph<T> {
      * 
      * @return boolean true if this graph is empty, false otherwise
      */
-    public boolean isEmpty(){
-        return vertices.size() == 0;
+    public boolean isEmpty() {
+        return this.vertices.size() == 0;
     }
 
     /** 
@@ -109,7 +110,7 @@ public class AdjListsGraph<T> implements Graph<T> {
      */
     public boolean isArc (T vertex1, T vertex2) {
         int index = vertices.indexOf(vertex1);
-        return arcs.elementAt(index).contains(vertex2);
+        return this.arcs.elementAt(index).contains(vertex2);
     }
 
     /** 
@@ -129,13 +130,13 @@ public class AdjListsGraph<T> implements Graph<T> {
      * 
      * @return boolean true if the graph is undirected, false otherwise
      */
-    public boolean isUndirected(){
-        for (int i = 0; i < arcs.size(); i++){
-            LinkedList<T> currentArc = arcs.elementAt(i); // get the arc in the arcs vector
+    public boolean isUndirected() {
+        for (int i = 0; i < this.arcs.size(); i++) {
+            LinkedList<T> currentArc = this.arcs.elementAt(i); // get the arc in this graph's arcs
 
-            for(int j = 0; j < currentArc.size(); j++){
-                int currentVertex = vertices.indexOf(currentArc.get(j));
-                if (!isEdge(vertices.get(i),vertices.get(currentVertex))){
+            for(int j = 0; j < currentArc.size(); j++) {
+                int currentVertex = this.vertices.indexOf(currentArc.get(j));
+                if (!isEdge(this.vertices.get(i), this.vertices.get(currentVertex))){
                     return false;
                 }
             }
@@ -151,9 +152,9 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T vertex to be added
      */
     public void addVertex (T vertex) {
-        if (!vertices.contains(vertex)){
-            vertices.add(vertex);
-            arcs.add(new LinkedList<T>());
+        if (!this.vertices.contains(vertex)){
+            this.vertices.add(vertex);
+            this.arcs.add(new LinkedList<T>());
         }
     }
 
@@ -163,14 +164,14 @@ public class AdjListsGraph<T> implements Graph<T> {
      * 
      * @param T vertex to be removed 
      */
-    public void removeVertex (T vertex){
-        if (vertices.contains(vertex)){
-            int index = vertices.indexOf(vertex);
-            vertices.remove(vertex);
-            arcs.remove(arcs.elementAt(index));
+    public void removeVertex (T vertex) {
+        if (this.vertices.contains(vertex)) {
+            int index = this.vertices.indexOf(vertex);
+            this.vertices.remove(vertex);
+            this.arcs.remove(this.arcs.elementAt(index));
 
-            for (int i = 0; i < arcs.size(); i++) {
-                arcs.get(i).remove(vertex);
+            for (int i = 0; i < this.arcs.size(); i++) {
+                this.arcs.get(i).remove(vertex);
             }
         }
     }
@@ -182,10 +183,10 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T start vertex of the arc
      * @param T end vertex of the arc
      */
-    public void addArc (T vertex1, T vertex2){
-        if (vertices.contains(vertex1) && vertices.contains(vertex2)){
-            int index = vertices.indexOf(vertex1);
-            arcs.elementAt(index).add(vertex2);
+    public void addArc (T vertex1, T vertex2) {
+        if (this.vertices.contains(vertex1) && this.vertices.contains(vertex2)){
+            int index = this.vertices.indexOf(vertex1);
+            this.arcs.elementAt(index).add(vertex2);
         }
     }
 
@@ -196,10 +197,10 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T start vertex of the arc
      * @param T end vertex of the arc
      */
-    public void removeArc (T vertex1, T vertex2){
-        if (vertices.contains(vertex1) && vertices.contains(vertex2)){
-            int index = vertices.indexOf(vertex1);
-            arcs.elementAt(index).remove(vertex2);
+    public void removeArc (T vertex1, T vertex2) {
+        if (this.vertices.contains(vertex1) && this.vertices.contains(vertex2)){
+            int index = this.vertices.indexOf(vertex1);
+            this.arcs.elementAt(index).remove(vertex2);
         }
     }
 
@@ -210,12 +211,12 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T start vertex of the arc
      * @param T end vertex of the arc
      */
-    public void addEdge (T vertex1, T vertex2){
-        if (vertices.contains(vertex1) && vertices.contains(vertex2)){
-            int index1 = vertices.indexOf(vertex1);
-            arcs.elementAt(index1).add(vertex2);
-            int index2 = vertices.indexOf(vertex2);
-            arcs.elementAt(index2).addFirst(vertex1);
+    public void addEdge (T vertex1, T vertex2) {
+        if (this.vertices.contains(vertex1) && this.vertices.contains(vertex2)) {
+            int index1 = this.vertices.indexOf(vertex1);
+            this.arcs.elementAt(index1).add(vertex2);
+            int index2 = this.vertices.indexOf(vertex2);
+            this.arcs.elementAt(index2).addFirst(vertex1);
         }
     }
 
@@ -226,12 +227,12 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T start vertex of the edge
      * @param T end vertex of the edge
      */
-    public void removeEdge (T vertex1, T vertex2){
-        if (vertices.contains(vertex1) && vertices.contains(vertex2)){
-            int index1 = vertices.indexOf(vertex1);
-            arcs.elementAt(index1).remove(vertex2);
-            int index2 = vertices.indexOf(vertex2);
-            arcs.elementAt(index2).remove(vertex1);
+    public void removeEdge (T vertex1, T vertex2) {
+        if (this.vertices.contains(vertex1) && this.vertices.contains(vertex2)) {
+            int index1 = this.vertices.indexOf(vertex1);
+            this.arcs.elementAt(index1).remove(vertex2);
+            int index2 = this.vertices.indexOf(vertex2);
+            this.arcs.elementAt(index2).remove(vertex1);
         }
     }
 
@@ -240,12 +241,12 @@ public class AdjListsGraph<T> implements Graph<T> {
      * 
      * @return String formatted respresentation of the graph components.
      */
-    public String toString(){
+    public String toString() {
         String s = "***Vertices***\n";
-        s += vertices.toString();
+        s += this.vertices.toString();
         s += "\n***Edges***\n";
-        for (int i = 0; i < arcs.size(); i++) {
-            s += "from " + vertices.elementAt(i) + ": " + arcs.elementAt(i) + "\n";
+        for (int i = 0; i < this.arcs.size(); i++) {
+            s += "from " + this.vertices.elementAt(i) + ": " + this.arcs.elementAt(i) + "\n";
         }
 
         return s;
@@ -256,21 +257,21 @@ public class AdjListsGraph<T> implements Graph<T> {
      * 
      * @param String name of the file to be written out
      */
-    public void saveToTGF(String tgf_file_name){
+    public void saveToTGF(String tgfFileName) {
         try {
-            PrintWriter writer = new PrintWriter(new File(tgf_file_name));
+            PrintWriter writer = new PrintWriter(new File(tgfFileName));
 
-            for (int i = 1; i <= vertices.size(); i++) {
-                writer.println(i + " " + vertices.get(i - 1));
+            for (int i = 1; i <= this.vertices.size(); i++) {
+                writer.println(i + " " + this.vertices.get(i - 1));
             }
             writer.println("#");
-            for (int i = 0; i < vertices.size(); i++) {
-                T vertex = vertices.get(i);
-                LinkedList<T> list = arcs.get(i);
+            for (int i = 0; i < this.vertices.size(); i++) {
+                T vertex = this.vertices.get(i);
+                LinkedList<T> list = this.arcs.get(i);
                 for (int j = 0; j < list.size(); j++) {
                     T vertexIndex = list.get(j);
-                    writer.println((vertices.indexOf(vertex)+1) + " " + 
-                        (vertices.indexOf(vertexIndex)+1));
+                    writer.println((this.vertices.indexOf(vertex)+1) + " " + 
+                        (this.vertices.indexOf(vertexIndex)+1));
                 }
             }
             writer.close();
@@ -285,12 +286,12 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T starting vertex 
      * @return LinkedList<T> of the searched vertices
      */
-    public LinkedList<T> depthFirstSearch(T vertex){
+    public LinkedList<T> depthFirstSearch(T vertex) {
         ArrayStack<T> stk = new ArrayStack<T>();
         LinkedList<T> result = new LinkedList<T>();
-        boolean[] marked = new boolean[vertices.size()];
+        boolean[] marked = new boolean[this.vertices.size()];
 
-        for (int v = 0; v < vertices.size(); v++){  // mark each vertex as unvisited
+        for (int v = 0; v < this.vertices.size(); v++){  // mark each vertex as unvisited
             marked[v] = false;
         }
         
@@ -300,12 +301,12 @@ public class AdjListsGraph<T> implements Graph<T> {
         // push/add starting vertex into stack, then mark it as visisted
         stk.push(vertex); 
         result.add(vertex);
-        marked[vertices.indexOf(vertex)] = true;
+        marked[this.vertices.indexOf(vertex)] = true;
 
-        while(!stk.isEmpty()){
+        while(!stk.isEmpty()) {
             currentNode = stk.peek();
-            currentIndex = vertices.indexOf(currentNode);
-            LinkedList<T> trackedArcs = arcs.get(currentIndex);
+            currentIndex = this.vertices.indexOf(currentNode);
+            LinkedList<T> trackedArcs = this.arcs.get(currentIndex);
             int i = 0;
             
             while(i <= trackedArcs.size()) {
@@ -313,10 +314,10 @@ public class AdjListsGraph<T> implements Graph<T> {
                     stk.pop();
                 }
                 // push vertex into stack and add to result list if it hasn't been visited
-                else if (marked[vertices.indexOf(trackedArcs.get(ii))] == false) {
+                else if (marked[this.vertices.indexOf(trackedArcs.get(ii))] == false) {
                     stk.push(trackedArcs.get(i)); 
                     result.add(ctrackedArcs.get(i));
-                    marked[vertices.indexOf(trackedArcs.get(i))] = true;
+                    marked[this.vertices.indexOf(trackedArcs.get(i))] = true;
 
                     i = trackedArcs.size() + 1; 
                 } 
@@ -333,12 +334,12 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T starting vertex 
      * @return LinkedList<T> containing the vertices that are the outcome of the depth first search
      */
-    public LinkedList<T> depthFirstSearch2(T vertex1, T vertex2){
+    public LinkedList<T> depthFirstSearch2(T vertex1, T vertex2) {
         ArrayStack<T> stk = new ArrayStack<T>();
         LinkedList<T> result = new LinkedList<T>();
-        boolean[] marked = new boolean[vertices.size()];
+        boolean[] marked = new boolean[this.vertices.size()];
 
-        for (int v = 0; v < vertices.size(); v++){  // mark each vertex as unvisited
+        for (int v = 0; v < this.vertices.size(); v++){  // mark each vertex as unvisited
             marked[v] = false;
         }
         
@@ -349,25 +350,25 @@ public class AdjListsGraph<T> implements Graph<T> {
         // push and add starting vertex into stack, then mark it as visited
         stk.push(vertex1);  
         result.add(vertex1);
-        marked[vertices.indexOf(vertex1)] = true;
+        marked[this.vertices.indexOf(vertex1)] = true;
 
-        while((!stk.isEmpty())&(isFound== false)){
+        while((!stk.isEmpty())&(isFound== false)) {
             currentNode = stk.peek();
-            currentIndex = vertices.indexOf(currentNode);
-            LinkedList<T> trackedArcs = arcs.get(currentIndex);
+            currentIndex = this.vertices.indexOf(currentNode);
+            LinkedList<T> trackedArcs = this.arcs.get(currentIndex);
             int i = 0;
             
             while(i <= trackedArcs.size()) {
                 if (indexOfList == trackedArcs.size()) {
                     stk.pop();
                 }
-                else if (marked[vertices.indexOf(trackedArcs.get(i))] == false) {
-                    if (trackedArcs.get(i) == vertex2){  // push vertex and add to list if it hasn't been visited
+                else if (marked[this.vertices.indexOf(trackedArcs.get(i))] == false) {
+                    if (trackedArcs.get(i) == vertex2) {  // push vertex and add to list if it hasn't been visited
                         isFound = true;
                     }
                     stk.push(trackedArcs.get(i)); 
                     result.add(trackedArcs.get(i));
-                    marked[vertices.indexOf(trackedArcs.get(i))] = true;
+                    marked[this.vertices.indexOf(trackedArcs.get(i))] = true;
 
                     i = trackedArcs.size() + 1; 
                 } 
@@ -383,40 +384,39 @@ public class AdjListsGraph<T> implements Graph<T> {
      * @param T starting vertex 
      * @return LinkedList<T> containing the vertices that are the outcome of the breadth first search
      */
-    public LinkedList<T> breadthFirstSearch(T vertex){
+    public LinkedList<T> breadthFirstSearch(T vertex) {
         LinkedQueue<T> q = new LinkedQueue<T>();       
         LinkedList<T> iterator = new LinkedList<T>();
         int count = 0;
 
-        boolean[] marked = new boolean[vertices.size()];
+        boolean[] marked = new boolean[this.vertices.size()];
 
-        for (int v = 0; v < vertices.size(); v++){ // mark each vertex as unvisited
+        for (int v = 0; v < this.vertices.size(); v++){ // mark each vertex as unvisited
             marked[v] = false;
         }
 
         q.enqueue(vertex);
-        marked[(vertices.indexOf(vertex))] = true;
+        marked[(this.vertices.indexOf(vertex))] = true;
         T currentVertex;
         int currentIndex;
         LinkedList<T> currentList;
 
-        while (!q.isEmpty()){
+        while (!q.isEmpty()) {
             currentVertex = q.dequeue();
-            currentIndex = vertices.indexOf(currentVertex);
+            currentIndex = this.vertices.indexOf(currentVertex);
 
             iterator.add(current);
             count++;
-            currentList = arcs.get(currentIndex);
-            for(int i = 0; i < currentList.size(); i++){
+            currentList = this.arcs.get(currentIndex);
+            for(int i = 0; i < currentList.size(); i++) {
                 T currentNode = currentList.get(i);
 
                 // enqueue vertex if it hasn't been visited and if arcs exist at from vertex (not null)
-                if (!marked[vertices.indexOf(currentNode)] && !(currentNode ==null)){
+                if (!marked[this.vertices.indexOf(currentNode)] && !(currentNode ==null)) {
                     q.enqueue(currentNodeInList);
-                    marked[vertices.indexOf(currentNode)] = true;
+                    marked[this.vertices.indexOf(currentNode)] = true;
                 }
             }
-
         }
         return iterator;
     }
@@ -435,11 +435,11 @@ public class AdjListsGraph<T> implements Graph<T> {
         g1.addArc("a", "b");
         g1.addEdge("a", "c");
         g1.removeVertex("e");
+        System.out.println(g1.toString());
         System.out.println("isArc(): \nExpected: true \nGot:" + g1.isArc("a", "b"));
         System.out.println("\nisEdge(): \nExpected: false \nGot:" + g1.isEdge("a", "b"));
         System.out.println(g1.depthFirstSearch("a"));
         System.out.println((g1.breadthFirstSearch("a")));
-        System.out.println(g1.toString());
         // g1.saveToTGF("string_graph.txt");
 
         System.out.println("\n***Test Tree of Strings***");
@@ -463,6 +463,7 @@ public class AdjListsGraph<T> implements Graph<T> {
         tree.addEdge("d","h");
         tree.addEdge("d","i");
         tree.addEdge("e","j");
+        System.out.println(tree.toString());
         System.out.println("breadthFirstSearch(): \nExpected: {a, b, c, d, e, f, g, h, i, j} \nGot:");
         System.out.println((tree.breadthFirstSearch("a")));
         System.out.println("\ndepthFirstSearch(): \nExpected: {a, b, c, d, e, f, g, h, i, j} \nGot:");
@@ -482,6 +483,7 @@ public class AdjListsGraph<T> implements Graph<T> {
         cycle.addEdge("3","4");
         cycle.addEdge("4","5");
         cycle.addEdge("5","1");
+        System.out.println(cycle.toString());
         System.out.println("breadthFirstSearch(): \nExpected: {1, 2, 3, 4, 5} \nGot:");
         System.out.println((cycle.breadthFirstSearch("1")));
         System.out.println("\ndepthFirstSearch(): \nExpected: {1, 2, 3, 4, 5} \nGot:");
@@ -500,6 +502,7 @@ public class AdjListsGraph<T> implements Graph<T> {
         disconnected.addEdge("1","2");
         disconnected.addArc("2","3");
         disconnected.addEdge("3","4");
+        System.out.println(disconnected.toString());
         System.out.println("breadthFirstSearch(): \nExpected: {1, 2, 3, 4} \nGot:");
         System.out.println((disconnected.breadthFirstSearch("1")));
         System.out.println("depthFirstSearch(): \nExpected: {1, 2, 3, 4} \nGot:");
